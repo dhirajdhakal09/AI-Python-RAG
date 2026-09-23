@@ -14,7 +14,7 @@ def main() -> None:
     os.environ["LANGSMITH_API_KEY"] = api_key
     os.environ["LANGSMITH_TRACING"] = "true"
     os.environ["ANTHROPIC_API_KEY"] = os.getenv("ANTHROPIC_API_KEY")
-    os.environ["OPENAI_KEY"]=os.getenv("OPENAI_KEY")
+    os.environ["OPENAI_API_KEY"]=os.getenv("OPENAI_API_KEY")
     print("LANGSMITH_API_KEY:", api_key)
 
     # create the dataset in LangSmith and evaluate the chatbot responses
@@ -22,11 +22,11 @@ def main() -> None:
     #chatbot_eval.evaluate()
 
     openai_client = OpenAIClient()
-    openai_client.correctness(
-        inputs={"question": "What is LangChain?"},
-        outputs={"response": "A framework for building LLM applications"},
-        reference_outputs={"answer": "A framework for building LLM applications"}
-    )
+    # openai_client.correctness(
+    #     inputs={"question": "What is LangChain?"},
+    #     outputs={"response": "A framework for building LLM applications"},
+    #     reference_outputs={"answer": "A framework for building LLM applications"}
+    # )
     ## call my_app for every data points 
     openai_client.evaluate()
     
@@ -107,7 +107,7 @@ class OpenAIClient:
     """Run evaluate"""
     default_instructions = "Respond to the users question in a short, concise manner (one short sentence)."
     def my_app(self,question: str, model: str = "gpt-4o-mini", instructions: str = default_instructions) -> str:
-        return self.chat.completions.create(
+        return self.anthropic_wrapper.chat.completions.create(
             model=model,
             temperature=0,
             messages=[
@@ -128,7 +128,7 @@ class OpenAIClient:
        experiment_results=self.langsmith_client.evaluate(
         self.ls_target, ## Your AI system
         data="Chatbot Evaluations 1",
-        evaluators=[self.correctness,self.concision],
+        evaluators=[self.correctness],
         experiment_prefix="openai-4o-mini-chatbot"
        )
 
