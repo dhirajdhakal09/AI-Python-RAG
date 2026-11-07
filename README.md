@@ -1,6 +1,6 @@
 # AI-Python Project
 
-This is a starter Python project created inside the `AI-Python` workspace.
+This is a starter Python project created inside the `AI-Python` workspace for learning RAG basics. 
 
 ## Setup
 
